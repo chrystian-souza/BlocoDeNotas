@@ -36,9 +36,9 @@ class DataBase:
     def registar_notas(self, nota ):
         self.connect()
         cursor = self.connection.cursor()
-        campos_nota = ('ID', 'NOME_DA_NOTA', 'DATA', 'TEXTO')
+        campos_nota = ('NOME_DA_NOTA', 'DATA', 'TEXTO')
 
-        valores = f"'{nota.id},{nota.nome_da_nota}','{nota.data}', '{nota.texto}'"
+        valores = f"'{nota.nome_da_nota}','{nota.data}', '{nota.texto}'"
 
         try:
             cursor.execute(f""" INSERT INTO NOTAS {campos_nota} VALUES ({valores})""")

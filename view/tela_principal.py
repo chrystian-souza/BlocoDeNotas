@@ -59,7 +59,6 @@ class MainWindow (QMainWindow):
         db = DataBase()
 
         nota = Bloco_De_Notas(
-            id=self.txt_id.text(),
             nome_da_nota=self.txt_nome_da_nota.text(),
             data=datetime.now().strftime("%Y-%m-%d"),
             texto=self.txt_texto.text()
