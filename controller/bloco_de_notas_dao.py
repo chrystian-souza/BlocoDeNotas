@@ -24,7 +24,7 @@ class DataBase:
             """
             CREATE TABLE IF NOT EXISTS NOTAS(
             NOME_DA_NOTA TEXT,
-            DATA DATETIME,
+            DATA TEXT,
             TEXTO TEXT,
             
             ID INTEGER PRIMARY KEY AUTOINCREMENT
@@ -36,9 +36,9 @@ class DataBase:
     def registar_notas(self, nota ):
         self.connect()
         cursor = self.connection.cursor()
-        campos_nota = ('NOME_DA_NOTA', 'DATA', 'TEXTO')
+        campos_nota = ('ID', 'NOME_DA_NOTA', 'DATA', 'TEXTO')
 
-        valores = f"'{nota.nome_da_nota}','{nota.data}', '{nota.texto}'"
+        valores = f"'{nota.id},{nota.nome_da_nota}','{nota.data}', '{nota.texto}'"
 
         try:
             cursor.execute(f""" INSERT INTO NOTAS {campos_nota} VALUES ({valores})""")
@@ -56,6 +56,19 @@ class DataBase:
             cursor.execute(f""" SELECT * FROM NOTAS WHERE ID = '{id}' """)
             return cursor.fetchone()
         except sqlite3.Error as e:
+            return None
+        finally:
+            self.close_conection()
+
+    def consultar_todas_notas(self):
+        self.connect()
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT * FROM NOTAS")
+            notas = cursor.fetchall()
+            return notas
+        except sqlite3.Error as e:
+            print(f'Erro {e}')
             return None
         finally:
             self.close_conection()
