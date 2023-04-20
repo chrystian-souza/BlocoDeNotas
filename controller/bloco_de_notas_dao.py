@@ -23,11 +23,10 @@ class DataBase:
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS NOTAS(
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
             NOME_DA_NOTA TEXT,
             DATA TEXT,
-            TEXTO TEXT,
-            
-            ID INTEGER PRIMARY KEY AUTOINCREMENT
+            TEXTO TEXT
             );
             
             """)
@@ -53,7 +52,7 @@ class DataBase:
         self.connect()
         try:
             cursor = self.connection.cursor()
-            cursor.execute(f""" SELECT * FROM NOTAS WHERE ID = '{id}' """)
+            cursor.execute(f""" SELECT * FROM NOTAS WHERE ID = {id} """)
             return cursor.fetchone()
         except sqlite3.Error as e:
             return None
@@ -77,7 +76,7 @@ class DataBase:
         self.connect()
         try:
             cursor = self.connection.cursor()
-            cursor.execute(f""" DELETE FROM NOTAS WHERE ID = '{id}'""")
+            cursor.execute(f""" DELETE FROM NOTAS WHERE ID = {id}""")
             self.connection.commit()
             return 'ok'
         except sqlite3.Error as e:
@@ -92,8 +91,8 @@ class DataBase:
             cursor.execute(f"""UPDATE NOTAS SET 
                            NOME_DA_NOTA = '{nota.nome_da_nota}',
                            DATA = '{nota.data}',
-                           TEXTO = '{nota.texto}',
-                           WHERE ID = '{nota.id}'  """)
+                           TEXTO = '{nota.texto}'
+                           WHERE ID = {nota.id}""")
             self.connection.commit()
             return 'ok'
         except sqlite3.Error as e:

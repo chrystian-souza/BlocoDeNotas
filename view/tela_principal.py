@@ -1,6 +1,6 @@
 import requests
 from PySide6.QtWidgets import (QMainWindow, QLabel, QComboBox, QLineEdit, QPushButton, QWidget, QMessageBox,
-                               QSizePolicy, QVBoxLayout, QTableWidget, QAbstractItemView, QTableWidgetItem)
+                               QSizePolicy, QVBoxLayout, QTableWidget, QAbstractItemView, QTableWidgetItem, QTextEdit)
 
 from model.bloco_de_notas import Bloco_De_Notas
 from controller.bloco_de_notas_dao import DataBase
@@ -16,18 +16,19 @@ class MainWindow (QMainWindow):
 
         self.lbl_id = QLabel('id')
         self.txt_id = QLineEdit()
+        self.txt_id.setReadOnly(True)
         self.lbl_nome_da_nota = QLabel('Título da nota')
         self.txt_nome_da_nota = QLineEdit()
         self.lbl_texto = QLabel('Texto')
-        self.txt_texto = QLineEdit()
-        self.txt_data = QLineEdit()
+        self.txt_texto = QTextEdit()
         self.txt_data = QLineEdit()
         self.btn_criar = QPushButton('Criar')
         self.btn_remover = QPushButton('Remover')
+        self.btn_limpar = QPushButton('Limpar')
         self.detalhes = QTableWidget()
 
-        self.detalhes.setColumnCount(3)
-        self.detalhes.setHorizontalHeaderLabels(['ID', 'NOME DA NOTA', 'TEXTO'])
+        self.detalhes.setColumnCount(4)
+        self.detalhes.setHorizontalHeaderLabels(['ID', 'NOME DA NOTA', 'DATA', 'TEXTO'])
 
         self.detalhes.setSelectionMode(QAbstractItemView.NoSelection)
         self.detalhes.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -42,6 +43,7 @@ class MainWindow (QMainWindow):
         layout.addWidget(self.detalhes)
         layout.addWidget(self.btn_criar)
         layout.addWidget(self.btn_remover)
+        layout.addWidget(self.btn_limpar)
 
         self.container = QWidget()
         self.container.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -50,6 +52,7 @@ class MainWindow (QMainWindow):
 
         self.btn_remover.setVisible(False)
         self.btn_criar.clicked.connect(self.criar_nota)
+        self.btn_limpar.clicked.connect(self.limpar_conteudo)
         self.btn_remover.clicked.connect(self.remover_nota)
         self.detalhes.cellDoubleClicked.connect(self.carrega_dados)
         self.mais_detalhes()
@@ -59,9 +62,10 @@ class MainWindow (QMainWindow):
         db = DataBase()
 
         nota = Bloco_De_Notas(
+            id=self.txt_id.text(),
             nome_da_nota=self.txt_nome_da_nota.text(),
             data=datetime.now().strftime("%Y-%m-%d"),
-            texto=self.txt_texto.text()
+            texto=self.txt_texto.toPlainText()
 
         )
         if self.btn_criar.text() == 'Criar':
@@ -80,7 +84,6 @@ class MainWindow (QMainWindow):
 
             if retorno == 'ok':
                 msg = QMessageBox()
-                msg.setIcon(QMessageBox)
                 msg.setIcon(QMessageBox.Information)
                 msg.setWindowTitle('Nota atualizada')
                 msg.setText('Nota atualizada com sucesso')
@@ -91,8 +94,18 @@ class MainWindow (QMainWindow):
                 msg.setWindowTitle('Erro ao atualizar')
                 msg.setText('Erro ao cadastrar, verifique os dados inseridos')
                 msg.exec()
-            self.mais_detalhes()
             self.txt_id.setReadOnly(False)
+        self.mais_detalhes()
+
+    def limpar_conteudo(self):
+        for widget in self.container.children():
+            if isinstance(widget, QLineEdit):
+                widget.clear()
+            elif isinstance(widget, QTextEdit):
+                widget.clear()
+        self.btn_remover.setVisible(False)
+        self.txt_id.setReadOnly(True)
+        self.btn_criar.setText('Criar')
 
     def remover_nota(self):
         msg = QMessageBox()
@@ -121,6 +134,7 @@ class MainWindow (QMainWindow):
                 nv_msg.exec()
             self.txt_id.setReadOnly(False)
             self.mais_detalhes()
+        self.mais_detalhes()
 
     def mais_detalhes(self):
         self.detalhes.setRowCount(0)
@@ -134,8 +148,10 @@ class MainWindow (QMainWindow):
 
     def carrega_dados(self, row, column):
         self.txt_id.setText(self.detalhes.item(row, 0).text())
+        self.txt_data.setText(self.detalhes.item(row, 2).text())
         self.txt_nome_da_nota.setText(self.detalhes.item(row, 1).text())
-        self.txt_texto.setText(self.detalhes.item(row, 2).text())
+        self.txt_texto.setText(self.detalhes.item(row, 3).text())
 
         self.btn_criar.setText('Atualizar')
+        self.btn_remover.setVisible(True)
         self.txt_id.setReadOnly(True)
