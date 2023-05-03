@@ -3,10 +3,17 @@ from infra.entities.nota import Nota
 
 class NotaRepository:
 
-#Método para
-    def select(self):
+
+# Método para realizar a consulta de todas as notas
+    def select_all(self):
         with DBConnectionHandler() as db:
             data = db.session.query(Nota).all()
+            return data
+
+# Método para realizar a consulta das notas por id
+    def select(self, id):
+        with DBConnectionHandler() as db:
+            data = db.session.query(Nota).filter(Nota.id == id).first()
             return data
 
 #Método para inserir nota no banco de dados

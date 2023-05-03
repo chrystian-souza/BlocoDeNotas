@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from infra.configs.base import Base
 
 class DBConnectionHandler:
 
@@ -25,11 +26,18 @@ class DBConnectionHandler:
                 conn.execute(f'CREATE DATABASE IF NOT EXISTS {self.__connection_string.rsplit("/", 1)[1]}')
                 conn.close()
                 print('Banco criado')
+                self.__create_table()
             else:
                 raise e
 
-#Função para criação da engine sem necessidade de informar dados de endereço do banco e utilização de queryes escritas a mão
-    def __create_engine(self):
+    def __create_table(self):
+        engine = create_engine(self.__connection_string, echo=True)
+        Base.metadata.create_all(bind=engine)
+        print("Tabela criada com sucesso!")
+
+
+    #Função para criação da engine sem necessidade de informar dados de endereço do banco e utilização de queryes escritas a mão
+    def __create_database_engine(self):
         engine = create_engine(self.__connection_string, echo=True)
 
     def get_engine(self):

@@ -6,9 +6,9 @@ class Nota(Base):
     __tablename__ = 'nota'
     #Colunas da tabela que serão criadas na tabela
     id = Column(Integer, autoincrement=True, primary_kay=True)
-    nome_da_nota = Column(String, nullable=False)
+    nome_da_nota = Column(String(length=100), nullable=False)
     data = Column(DateTime)
-    texto = Column(String, nullable=False)
+    texto = Column(String(length=100), nullable=False)
 
     #Função que sobrescreve a maneira de 'printar' o objeto
     def __repr__(self):

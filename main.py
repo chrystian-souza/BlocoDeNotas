@@ -2,7 +2,7 @@ import sys
 
 
 from PySide6.QtWidgets import QApplication
-from controller.bloco_de_notas_dao import DataBase
+from PySide6.QtGui import QIcon
 from view.tela_principal import MainWindow
 
 db = DataBase()
