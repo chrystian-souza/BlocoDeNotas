@@ -13,7 +13,7 @@ class MainWindow (QMainWindow):
     def __init__(self):
         super().__init__()
 
-        conn = DBConnectionHandler()
+        #conn = DBConnectionHandler()
 
 
         self.setMinimumSize(400, 400)
@@ -74,7 +74,7 @@ class MainWindow (QMainWindow):
 
         )
         if self.btn_criar.text() == 'Criar':
-            retorno = db.registar_notas(nota)
+            retorno = db.insert(nota)
 
             if retorno == 'ok':
                 msg = QMessageBox()
@@ -145,6 +145,7 @@ class MainWindow (QMainWindow):
         self.detalhes.setRowCount(0)
         conn = NotaRepository()
         lista_notas = conn.select_all()
+        print('mais detalhes def')
         self.detalhes.setRowCount(len(lista_notas))
 
         linha = 0

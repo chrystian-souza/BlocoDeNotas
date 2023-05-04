@@ -22,7 +22,7 @@ class NotaRepository:
             try:
                 db.session.add(nota)
                 db.session.commit()
-                return 'OK'
+                return 'ok'
             except Exception as e:
                 db.session.rollback()
                 return e
