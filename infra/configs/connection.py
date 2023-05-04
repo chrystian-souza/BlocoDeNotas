@@ -8,14 +8,14 @@ class DBConnectionHandler:
         #Dados de endereço do banco de dados
         self.__connection_string = 'mysql+pymysql://root:Senac2021@localhost:3306/notas'
         #Instância da engine(gerenciador do banco)
-        self.__engine = self.__create_data_base_engine()
+        self.__engine = self. __create_database_engine()
         #Sessão nula para que possa ser alocada uma nova ao ser instanciado um obj
         self.session = None
         #Validação da existencia do banco de dados
         self.__create_database()
 
     #Método para validação da existencia do banco de dados, caso não exista
-    def create_database(self):
+    def __create_database(self):
         engine = create_engine(self.__connection_string, echo=True)
         try:
             engine.connect()

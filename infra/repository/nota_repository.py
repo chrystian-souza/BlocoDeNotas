@@ -17,11 +17,16 @@ class NotaRepository:
             return data
 
 #Método para inserir nota no banco de dados
-    def insert(self, nome_da_nota, data, texto):
+    def insert(self,nota):
         with DBConnectionHandler() as db:
-            data_inset = Nota(nome_da_nota=nome_da_nota, data=data, texto=texto)
-            db.session.add(data_inset)
-            db.session.commit()
+            try:
+                db.session.add(nota)
+                db.session.commit()
+                return 'OK'
+            except Exception as e:
+                db.session.rollback()
+                return e
+
 
 #Mètodo para realizar a remoção de uma nota do banco de dados
     def delete(self):

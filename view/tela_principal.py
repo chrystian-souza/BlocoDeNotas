@@ -2,8 +2,9 @@ import requests
 from PySide6.QtWidgets import (QMainWindow, QLabel, QComboBox, QLineEdit, QPushButton, QWidget, QMessageBox,
                                QSizePolicy, QVBoxLayout, QTableWidget, QAbstractItemView, QTableWidgetItem, QTextEdit)
 
-from model.bloco_de_notas import Bloco_De_Notas
-from controller.bloco_de_notas_dao import DataBase
+from infra.entities.nota import Nota
+from infra.repository.nota_repository import NotaRepository
+from infra.configs.base import Base
 from datetime import datetime
 
 from infra.configs.connection import DBConnectionHandler
@@ -13,7 +14,7 @@ class MainWindow (QMainWindow):
         super().__init__()
 
         conn = DBConnectionHandler()
-        conn.create_database()
+
 
         self.setMinimumSize(400, 400)
 
@@ -64,9 +65,8 @@ class MainWindow (QMainWindow):
 
 
     def criar_nota(self):
-        db = DataBase()
-
-        nota = Bloco_De_Notas(
+        db = NotaRepository()
+        nota = Nota(
             id=self.txt_id.text(),
             nome_da_nota=self.txt_nome_da_nota.text(),
             data=datetime.now().strftime("%Y-%m-%d"),
@@ -143,13 +143,18 @@ class MainWindow (QMainWindow):
 
     def mais_detalhes(self):
         self.detalhes.setRowCount(0)
-        db = DataBase()
-        lista_notas = db.consultar_todas_notas()
+        conn = NotaRepository()
+        lista_notas = conn.select_all()
         self.detalhes.setRowCount(len(lista_notas))
 
-        for linha, nota in enumerate(lista_notas):
-            for coluna, valor in enumerate(nota):
-                self.detalhes.setItem(linha, coluna, QTableWidgetItem(str(valor)))
+        linha = 0
+        for nota in lista_notas:
+            valores = [nota.id, nota.nome_da_nota, nota.texto, nota.data]
+            for valor in valores:
+                item = QTableWidgetItem(str(valor))
+                self.detalhes.setItem(linha, valores.index(valor), item)
+                self.detalhes.item(linha, valores.index(valor))
+
 
     def carrega_dados(self, row, column):
         self.txt_id.setText(self.detalhes.item(row, 0).text())
