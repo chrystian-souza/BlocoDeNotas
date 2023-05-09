@@ -2,12 +2,13 @@ import requests
 from PySide6.QtWidgets import (QMainWindow, QLabel, QComboBox, QLineEdit, QPushButton, QWidget, QMessageBox,
                                QSizePolicy, QVBoxLayout, QTableWidget, QAbstractItemView, QTableWidgetItem, QTextEdit)
 
+from infra.configs.connection import DBConnectionHandler
 from infra.entities.nota import Nota
 from infra.repository.nota_repository import NotaRepository
 from infra.configs.base import Base
 from datetime import datetime
 
-from infra.configs.connection import DBConnectionHandler
+
 
 class MainWindow (QMainWindow):
     def __init__(self):
@@ -34,7 +35,7 @@ class MainWindow (QMainWindow):
         self.detalhes = QTableWidget()
 
         self.detalhes.setColumnCount(4)
-        self.detalhes.setHorizontalHeaderLabels(['ID', 'NOME DA NOTA', 'DATA', 'TEXTO'])
+        self.detalhes.setHorizontalHeaderLabels(['ID', 'NOME DA NOTA', 'TEXTO', 'DATA'])
 
         self.detalhes.setSelectionMode(QAbstractItemView.NoSelection)
         self.detalhes.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -67,7 +68,6 @@ class MainWindow (QMainWindow):
     def criar_nota(self):
         db = NotaRepository()
         nota = Nota(
-            id=self.txt_id.text(),
             nome_da_nota=self.txt_nome_da_nota.text(),
             data=datetime.now().strftime("%Y-%m-%d"),
             texto=self.txt_texto.toPlainText()
@@ -85,7 +85,7 @@ class MainWindow (QMainWindow):
 
         elif self.btn_criar.text() == 'Atualizar':
 
-            retorno = db.atualizar_notas(nota)
+            retorno = db.update(nota.id, nota.nome_da_nota,nota.texto)
 
             if retorno == 'ok':
                 msg = QMessageBox()
@@ -112,7 +112,9 @@ class MainWindow (QMainWindow):
         self.txt_id.setReadOnly(True)
         self.btn_criar.setText('Criar')
 
+
     def remover_nota(self):
+        db = NotaRepository()
         msg = QMessageBox()
         msg.setWindowTitle('Remover nota')
         msg.setText('Esta nota será removida')
@@ -124,8 +126,7 @@ class MainWindow (QMainWindow):
         resposta = msg.exec()
 
         if resposta == QMessageBox.Yes:
-            db = DataBase()
-            retorno = db.deletar_notas(self.txt_id.text())
+            retorno = db.delete(self.txt_id.text())
 
             if retorno == 'ok':
                 nv_msg = QMessageBox()
@@ -159,9 +160,9 @@ class MainWindow (QMainWindow):
 
     def carrega_dados(self, row, column):
         self.txt_id.setText(self.detalhes.item(row, 0).text())
-        self.txt_data.setText(self.detalhes.item(row, 2).text())
         self.txt_nome_da_nota.setText(self.detalhes.item(row, 1).text())
-        self.txt_texto.setText(self.detalhes.item(row, 3).text())
+        self.txt_texto.setText(self.detalhes.item(row, 2).text())
+        self.txt_data.setText(self.detalhes.item(row, 3).text())
 
         self.btn_criar.setText('Atualizar')
         self.btn_remover.setVisible(True)

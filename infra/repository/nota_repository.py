@@ -33,10 +33,16 @@ class NotaRepository:
         with DBConnectionHandler() as db:
             db.session.query(Nota).filter(Nota.id == id).delete()
             db.session.commit()
+            return 'ok'
 
 #Método para atualizar uma nota
 
-    def update(self, id, nome_da_nota, texto):
+    def update(self,id, nome_da_nota, texto):
         with DBConnectionHandler() as db:
-            db.session.query(Nota).filter(Nota.id == id).update({'nome_da_nota' : nome_da_nota, 'texto' : texto})
-            db.session.commit()
+            try:
+                db.session.query(Nota).filter(Nota.id == id).update({'nome_da_nota' : nome_da_nota, 'texto' : texto})
+                db.session.commit()
+                return 'ok'
+            except Exception as e:
+                db.session.rollback()
+                return e
