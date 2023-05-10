@@ -82,6 +82,7 @@ class MainWindow(QMainWindow):
 
         elif self.btn_criar.text() == 'Atualizar':
 
+            nota.id = int(self.txt_id.text())
             retorno = db.update(nota)
 
             if retorno == 'ok':
