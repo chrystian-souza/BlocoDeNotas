@@ -21,7 +21,7 @@ class DBConnectionHandler:
             engine.connect()
         except Exception as e:
             if '1049' in str(e):
-                engine = create_engine(self.__connection_string.rsplit('/', 1)[0], echo=True)
+                engine = create_engine(self.__connection_string.rsplit("/", 1)[0], echo=True)
                 conn = engine.connect()
                 conn.execute(f'CREATE DATABASE IF NOT EXISTS {self.__connection_string.rsplit("/", 1)[1]}')
                 conn.close()
