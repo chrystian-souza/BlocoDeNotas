@@ -5,7 +5,6 @@ from PySide6.QtWidgets import (QMainWindow, QLabel, QComboBox, QLineEdit, QPushB
 from infra.configs.connection import DBConnectionHandler
 from infra.entities.nota import Nota
 from infra.repository.nota_repository import NotaRepository
-from infra.configs.base import Base
 from datetime import datetime
 
 
