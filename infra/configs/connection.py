@@ -21,7 +21,7 @@ class DBConnectionHandler:
             engine.connect()
         except Exception as e:
             if '1049' in str(e):
-                engine = create_engine(self.__connection_string.rsplit("/", 1)[0], echo=True)
+                engine = create_engine(self.__connection_string.rsplit('/', 1)[0], echo=True)
                 conn = engine.connect()
                 conn.execute(f'CREATE DATABASE IF NOT EXISTS {self.__connection_string.rsplit("/", 1)[1]}')
                 conn.close()
@@ -39,7 +39,6 @@ class DBConnectionHandler:
     #Função para criação da engine sem necessidade de informar dados de endereço do banco e utilização de queryes escritas a mão
     def __create_database_engine(self):
         engine = create_engine(self.__connection_string, echo=True)
-
         return engine
 
     def get_engine(self):
